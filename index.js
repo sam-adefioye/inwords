@@ -1,8 +1,8 @@
-var pg = require('pg');
-var express = require('express');
-var path = require('path');
-var app = express();
-var port = process.env.PORT || 5000;
+const pg = require('pg')
+const express = require('express')
+const path = require('path')
+const app = express()
+const PORT = process.env.PORT || 5000
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
@@ -19,4 +19,4 @@ app.get('/about', (req, res) => res.render());
 //
 //   })
 
-app.listen(port);
+app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
