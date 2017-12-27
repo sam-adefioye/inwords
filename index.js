@@ -8,10 +8,10 @@ app.set('views', __dirname + 'views');
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => res.render('pages/index'));
-app.get('/login', (req, res) => res.render());
-app.get('/new', (req, res) => res.render());
-app.get('/help', (req, res) => res.render());
-app.get('/about', (req, res) => res.render());
+// app.get('/login', (req, res) => res.render());
+// app.get('/new', (req, res) => res.render());
+// app.get('/help', (req, res) => res.render());
+// app.get('/about', (req, res) => res.render());
 
 // app.route('/login')
 //   .get(function (req, res) {

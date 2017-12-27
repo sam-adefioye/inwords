@@ -1,7 +1,7 @@
 {
   "name": "in-words-app",
   "version": "1.0.0",
-  "description": "inWords, yours and yours alone.",
+  "description": "inWords, yours and yours alone",
   "engines": {
     "node": "8.9.1"
   },
