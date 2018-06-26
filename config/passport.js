@@ -41,7 +41,7 @@ module.exports = function(passport) {
                   })
                 }
               })
-            }
+            })
           })
           cb(null, extractProfile(profile));
     })));
