@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <% include ../partials/header.ejs %>
+    
+    <script src="lib/codemirror.js"></script>
+    <link rel="stylesheet" href="lib/codemirror.css">
+    <script src="mode/javascript/javascript.js"></script>
+  </head>
+
+  <body>
+    <form>
+      <textarea></textarea>
+    </form>
+    <script>
+      var editor = document.getElementsByTagName('FORM')[0].getElementsByTagName('TEXTAREA')[0];
+      var cmEditor = CodeMirror.fromTextArea(editor, {
+        mode: "markdown",
+        lineWrapping: true,
+        autofocus: true
+      });
+    </script>
+  </body>
+</html>

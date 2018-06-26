@@ -8,7 +8,11 @@
 
     <% include ../partials/nav.ejs %>
 
-    <a type="button" class="btn btn-lg btn-default" href="/auth/login"><span>Login</span></a>
+    <ul>
+      <% results.forEach(function(r) { %>
+          <li><%= r.n_title %> - <%= r.n_content %></li>
+      <% }); %>
+    </ul>
 
     <footer style="text-align: center;">
       <% include ../partials/footer.ejs %>

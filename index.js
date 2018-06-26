@@ -1,5 +1,6 @@
 const pg = require('pg')
 const express = require('express')
+const passport = require('passport')
 const path = require('path')
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -8,15 +9,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.get('/', (req, res) => res.render('pages/index'));
-app.get('/login', (req, res) => res.render());
-app.get('/new', (req, res) => res.render());
-app.get('/help', (req, res) => res.render());
-app.get('/about', (req, res) => res.render());
-
-// app.route('/login')
-//   .get(function (req, res) {
-//
-//   })
+require('./config/passport.js')(passport);
+require('./app/routes.js')(app, passport);
 
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`));
