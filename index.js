@@ -1,6 +1,6 @@
 const pg = require('pg')
 const express = require('express')
-const passport = require('passport-google-oauth')
+const passport = require('passport')
 const path = require('path')
 const app = express()
 const PORT = process.env.PORT || 5000

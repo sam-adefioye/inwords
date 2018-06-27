@@ -44,7 +44,7 @@ module.exports = function(passport) {
             })
           })
           cb(null, extractProfile(profile));
-    })));
+    }));
 
       // used to serialize the user for the session
     passport.serializeUser(function(user, cb) {
