@@ -8,9 +8,22 @@
 
     <% include ../partials/nav.ejs %>
 
-    <a type="button" class="btn btn-lg btn-default" href="/auth/login"><span>Login</span></a>
+    <div class="container-fluid text-center">
+      <div class="row">
+        <div class="col-xs-3"></div>
+        <div class="col-xs-6">
+          <h2 style="margin-bottom: 50px;">In <strong>your</strong> words only.</h2>
+          <p style="margin-bottom: 40px;"><big>Write. Write anything. Emails. Letters. Notes.</big></p>
+          <a type="button" class="btn btn-lg btn-default inline-block" style="margin: 10px;" href="/auth/login">
+            <i class="fab fa-google-plus" style="color: #d34836;"></i>
+            <span>Login</span>
+          </a>
+        </div>
+        <div class="col-xs-3"></div>
+      </div>
+    </div>
 
-    <footer style="text-align: center;">
+    <footer style="text-align: center; padding: 10px;">
       <% include ../partials/footer.ejs %>
     </footer>
   </body>
