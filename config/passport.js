@@ -1,7 +1,7 @@
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 // load the auth variables
-var configAuth = require('./config/auth.js');
+var configAuth = require('./config/auth');
 
 function extractProfile (profile) {
   return {
