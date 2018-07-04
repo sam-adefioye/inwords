@@ -1,7 +1,7 @@
 {
   "name": "in-words-app",
   "version": "1.0.0",
-  "description": "inWords, yours and yours alone",
+  "description": "inWords, yours and yours alone.",
   "engines": {
     "node": "8.9.1"
   },
@@ -13,6 +13,7 @@
     "pg": "6.x",
     "ejs": "^2.5.6",
     "express": "^4.15.2",
+    "body-parser": "~1.18.3",
     "passport": "~0.4.0",
     "passport-facebook" : "~2.1.1",
     "passport-twitter" : "~1.0.4",

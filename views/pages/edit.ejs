@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <% include ../partials/header.ejs %>
+
+    <script src="codemirror-5.32.0/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="codemirror-5.32.0/lib/codemirror.css">
+    <script src="mode/javascript/javascript.js"></script>
+  </head>
+
+  <body>
+    <div class="container-fluid text-center">
+      <div class="row">
+        <div class="col-xs-2"></div>
+        <div class="col-xs-8">
+          <form method="post" action="/new" class="inline-block">
+            <div class="form-group">
+              <input class="form-control" type="text" name="title" value="<%= results[0].title %>" maxlength="100">
+            </div>
+            <textarea name="notes"><%= results[0].text %></textarea>
+            <button type="submit" name="submit" value="Save" class="btn btn-default pull-right"></button>
+          </form>
+        </div>
+        <div class="col-xs-2"></div>
+      </div>
+    </div>
+
+    <script>
+      var editor = document.getElementsByTagName('FORM')[0].getElementsByTagName('TEXTAREA')[0];
+      var cmEditor = CodeMirror.fromTextArea(editor, {
+        mode: "markdown",
+        lineWrapping: true,
+        autofocus: true
+      });
+    </script>
+  </body>
+</html>
