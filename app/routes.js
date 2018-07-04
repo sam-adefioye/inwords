@@ -139,7 +139,7 @@ module.exports = function(app, passport) {
   app.get('/account', function(req, res) {
     res.render('pages/account', {name: req.user.displayName});
   });
-  app.post('/delete', function(req, res) {
+  app.post('/account/delete', function(req, res) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
       client.query(delUserQuery, [req.user.id], function(err, result) {
         done();
