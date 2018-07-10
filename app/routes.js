@@ -1,24 +1,29 @@
-module.exports = function(app, passport) {
+module.exports = function(app, passport, pg) {
   const notesQuery = 'SELECT N.title AS n_title, NT.note_no AS n_id\
   FROM notes AS N, notes_text AS NT, users AS u\
-  WHERE u.user_id = $1 AND u.user_id = N.goog_id AND N.id = NT.id;';
+  WHERE u.user_id = $1 AND u.user_id = N.goog_id AND N.id = NT.id';
 
   const idQuery = 'SELECT NT.note_no AS n_id, NT.note_text AS n_content\
-  FROM notes_text AS NT WHERE n_id = $1;';
+  FROM notes_text AS NT WHERE NT.note_no = $1';
 
-  const newQuery = 'INSERT INTO notes(title, creation_date, goog_id) VALUES ($1, CURRENT_DATE, $2)\
-  RETURNING id AS text_id; INSERT INTO notes_text(id, note_text, note_no) VALUES (text_id, $3, $4);';
+  const newQuery1 = 'INSERT INTO notes(title, creation_date, goog_id) VALUES ($1, CURRENT_DATE, $2) RETURNING id';
 
-  const deleteQuery = 'DELETE FROM notes_text AS NT WHERE NT.note_no = $1 RETURNING id AS note_id;\
-  DELETE FROM notes AS N WHERE note_id = N.id;';
+  const newQuery2 = 'INSERT INTO notes_text(id, note_text, note_no) VALUES ($1, $2, $3)';
+
+  const deleteQuery1 = 'DELETE FROM notes_text AS NT WHERE NT.note_no = $1 RETURNING id';
+
+  const deleteQuery2 = 'DELETE FROM notes AS N WHERE N.id = $1';
 
   const editQuery = 'SELECT NT.note_text AS text, N.title AS title FROM notes_text AS NT, notes AS N\
-  WHERE NT.note_no = $1 AND N.id = NT.id;';
+  WHERE NT.note_no = $1 AND N.id = NT.id';
 
-  const editQuery2 = 'UPDATE notes_text SET note_text = $1 WHERE note_no = $2 RETURNING id AS ret_id;\
-  UPDATE notes SET title = $3 WHERE id = ret_id;';
+  const editQuery1 = 'UPDATE notes_text SET note_text = $1 WHERE note_no = $2 RETURNING id';
 
-  const delUserQuery = 'DELETE FROM users WHERE user_id = $1;';
+  const editQuery2 = 'UPDATE notes SET title = $1 WHERE id = $2';
+
+  const delUserQuery1 = 'DELETE FROM notes, notes_text JOIN notes_text ON notes.id = notes_text.id';
+
+  const delUserQuery = 'DELETE FROM users WHERE user_id = $1';
 
   function createNoteId(a) {
     var d = new Date();
@@ -34,7 +39,7 @@ module.exports = function(app, passport) {
     return final;
   }
 
-  app.get('/', (req, res) => res.render('pages/index'));
+  app.get('/', (req, res) => res.render('index'));
   app.get('/auth/login', (req, res, next) => {
     if (req.query.return) {
       req.session.oauth2return = req.query.return;
@@ -57,25 +62,12 @@ module.exports = function(app, passport) {
           console.error(err);
           res.send("Error " + err);
         } else {
-          res.render('/pages/notes', {results: result.rows, name: req.user.displayName});
+          res.render('notes', {results: result.rows, name: req.user.displayName});
         }
       })
     })
   });
   app.get('/notes/:id', function(req, res) {
-    pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-      client.query(idQuery, [req.params.id], function(err, result) {
-        done();
-        if(err){
-          console.error(err);
-          res.send("Error " + err);
-        } else {
-          res.render('/pages/note', {results: result.rows, name: req.user.displayName});
-        }
-      })
-    })
-  });
-  app.get('/notes/:id/edit', function(req, res) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
       client.query(editQuery, [req.params.id], function(err, result) {
         done();
@@ -83,63 +75,164 @@ module.exports = function(app, passport) {
           console.error(err);
           res.send("Error " + err);
         } else {
-          res.render('/pages/edit', {results: result.rows});
+          res.render('note', {results: result.rows, name: req.user.displayName, id: req.params.id});
         }
       })
     })
   });
-  app.post('/notes/:id/edit', function(req, res) {
+  // app.get('/notes/:id/edit', function(req, res) {
+  //   pg.connect(process.env.DATABASE_URL, function(err, client, done) {
+  //     client.query(editQuery, [req.params.id], function(err, result) {
+  //       done();
+  //       if(err){
+  //         console.error(err);
+  //         res.send("Error " + err);
+  //       } else {
+  //         res.render('edit', {results: result.rows, id: req.params.id});
+  //       }
+  //     })
+  //   })
+  // });
+  app.post('/notes/:id', function(req, res) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-      client.query(editQuery2, [req.body.notes, req.params.id, req.body.title], function(err, result) {
-        done();
-        if(err){
-          console.error(err);
-          res.send("Error " + err);
-        } else {
-          res.render('/pages/notes');
+      const shouldAbort = (err) => {
+        if (err) {
+          console.error('Error in transaction', err.stack)
+          client.query('ROLLBACK', (err) => {
+            if (err) {
+              console.error('Error rolling back client', err.stack)
+            }
+            // release the client back to the pg
+            done()
+          })
         }
+        return !!err
+      }
+
+      client.query('BEGIN', function(err) {
+        if(shouldAbort(err)) return
+
+        var editNotes = req.body.notes;
+        var noteID = req.params.id;
+        client.query(editQuery1, [editNotes.toString(), noteID], function(err, result) {
+          if(shouldAbort(err)) return
+
+          const retval3 = result.rows[0].id;
+          var editTitle = req.body.title;
+          client.query(editQuery2, [editTitle.toString(), retval3], function(err, result) {
+            if(shouldAbort(err)) return
+            client.query('COMMIT', function(err, result) {
+              if (err) {
+                console.error('Error committing transaction', err.stack);
+              }
+              done();
+              res.redirect('/notes');
+            })
+          })
+        })
       })
     })
   });
-  app.post('/notes/:id/delete', function(req, res) {
+  app.get('/notes/:id/delete', function(req, res) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-      client.query(deleteQuery, [req.params.id], function(err, result) {
-        done();
-        if(err){
-          console.error(err);
-          res.send("Error " + err);
-        } else {
-          res.render('/pages/notes', {});
+      const shouldAbort = (err) => {
+        if (err) {
+          console.error('Error in transaction', err.stack)
+          client.query('ROLLBACK', (err) => {
+            if (err) {
+              console.error('Error rolling back client', err.stack)
+            }
+            // release the client back to the pg
+            done()
+          })
         }
+        return !!err
+      }
+
+      client.query('BEGIN', function(err) {
+        if(shouldAbort(err)) return
+
+        var noteID = req.params.id;
+        client.query(deleteQuery1, [noteID], function(err, result) {
+          if(shouldAbort(err)) return
+
+          const retval2 = result.rows[0].id;
+          client.query(deleteQuery2, [retval2], function(err, result) {
+            if(shouldAbort(err)) return
+            client.query('COMMIT', function(err, result) {
+              if (err) {
+                console.error('Error committing transaction', err.stack);
+              }
+              done();
+              res.redirect('/notes');
+            })
+          })
+        })
       })
     })
   });
   app.get('/new', function(req, res) {
-    res.render('pages/new');
+    res.render('new');
   });
   app.post('/new', function(req, res) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-      client.query(newQuery, [req.body.title, req.user.id, req.body.notes, createNoteId(req.user.id)], function(err, result) {
-        done();
-        if(err){
-          console.error(err);
-          res.send("Error " + err);
-        } else {
-          res.render('/pages/notes');
+      const shouldAbort = (err) => {
+        if (err) {
+          console.error('Error in transaction', err.stack)
+          client.query('ROLLBACK', (err) => {
+            if (err) {
+              console.error('Error rolling back client', err.stack)
+            }
+            // release the client back to the pg
+            done()
+          })
         }
+        return !!err
+      }
+
+      client.query('BEGIN', function(err) {
+        if(shouldAbort(err)) return
+
+        var newTitle = req.body.title;
+        var userID = req.user.id;
+        client.query(newQuery1, [newTitle.toString(), userID], function(err, result) {
+          if(shouldAbort(err)) return
+
+          const retval1 = result.rows[0].id;
+          var newNotes = req.body.notes;
+          client.query(newQuery2, [retval1, newNotes.toString(), createNoteId(req.user.id)], function(err, result) {
+            if(shouldAbort(err)) return
+            client.query('COMMIT', function(err, result) {
+              if (err) {
+                console.error('Error committing transaction', err.stack);
+              }
+              done();
+              res.redirect('/notes');
+            })
+          })
+        })
       })
     })
   });
+
   app.get('/help', function(req, res) {
-    res.render('pages/help', {name: req.user.displayName});
+    if(req.user) {
+      res.render('help', {loggedIn: true, name: req.user.displayName});
+    } else {
+      res.render('help', {loggedIn: false});
+    }
   });
   app.get('/about', function(req, res) {
-    res.render('pages/about');
+    if(req.user) {
+      res.render('about', {loggedIn: true, name: req.user.displayName});
+    } else {
+      res.render('about', {loggedIn: false});
+    }
   });
   app.get('/account', function(req, res) {
-    res.render('pages/account', {name: req.user.displayName});
+    res.render('account', {name: req.user.displayName});
   });
-  app.post('/account/delete', function(req, res) {
+  app.get('/account/delete', function(req, res) {
     pg.connect(process.env.DATABASE_URL, function(err, client, done) {
       client.query(delUserQuery, [req.user.id], function(err, result) {
         done();
@@ -147,7 +240,8 @@ module.exports = function(app, passport) {
           console.error(err);
           res.send("Error " + err);
         } else {
-          res.render('/pages/index');
+          req.logout();
+          res.redirect('/');
         }
       })
     })

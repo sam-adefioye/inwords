@@ -1,3 +1,11 @@
+/* a {
+  font-family: 'Quicksand', sans-serif, 'Pacifico', cursive, "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+} */
+
+nav, footer {
+  font-family: "Courier New", Courier, monospace;
+}
+
 body {
-  font-family: "Courier New", Courier, monospace, 'Quicksand', sans-serif, 'Pacifico', cursive, "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+  font-family: 'Josefin Sans', sans-serif, 'Quicksand', sans-serif, 'Pacifico', cursive, "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
 }

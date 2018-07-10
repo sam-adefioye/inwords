@@ -6,13 +6,17 @@
 
   <body>
 
-    <% include ../partials/nav2.ejs %>
+    <% if(loggedIn) { %>
+        <% include ../partials/nav2.ejs %>
+    <% } else { %>
+      <% include ../partials/nav.ejs %>
+    <% } %>
 
     <div class="container-fluid text-center">
       <div class="row">
         <div class="col-xs-2"></div>
         <div class="col-xs-8">
-          <h1 style="margin-bottom: 50px;">Help</h1>
+          <h1 style="margin: 50px;">Help</h1>
           <p style="margin-bottom: 40px;">
             Any issues? Contact me via <a href="mailto:sam.adefioye@gmail.com">email</a> or <a href="http://twitter.com/samadfye">Twitter</a>.
           </p>
@@ -25,8 +29,12 @@
     </div>
 
     <footer style="text-align: center; padding: 10px;">
-      <p>Signed in as <%= name %></p><br/>
+      <% if(loggedIn) { %>
+        <p>Signed in as <%= name %></p>
       <% include ../partials/footer2.ejs %>
+      <% } else { %>
+          <% include ../partials/footer.ejs %>
+      <% } %>
     </footer>
   </body>
 </html>

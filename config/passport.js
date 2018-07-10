@@ -1,4 +1,4 @@
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 // load the auth variables
 var configAuth = require('./auth');
@@ -11,7 +11,7 @@ function extractProfile (profile) {
   };
 }
 
-module.exports = function(passport) {
+module.exports = function(passport, pg) {
   const checkUser = 'SELECT EXISTS (SELECT * FROM users WHERE user_id = $1);'
   const inputUser = 'INSERT INTO users VALUES ($1, $2, $3);'
     // =========================================================================
@@ -30,7 +30,7 @@ module.exports = function(passport) {
                 if(err)
                   cb(err);
 
-                if(result.rows[0].exists == 't') {
+                if(result != null && result.rows[0].exists == 't') {
                   cb(null, extractProfile(profile));
                 } else {
                   client.query(inputUser, [profile.id, profile.displayName, profile.emails[0].value], function(err, result) {

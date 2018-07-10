@@ -8,9 +8,9 @@
       <div class="row">
         <div class="col-sm-1 col-xs-0"></div>
         <div class="col-sm-10 col-xs-12">
-          <form name="editor" style="margin: 50px;" method="post" action="/new" class="inline-block">
+          <form name="editor" style="margin: 50px;" method="post" action="/notes/<%= id %>/edit" class="inline-block">
             <div class="form-group">
-              <input class="form-control" type="text" name="title" placeholder="Title" maxlength="100">
+              <input class="form-control" type="text" name="title" value="<%= results[0].title %>" maxlength="100">
             </div>
             <textarea name="notes"></textarea>
             <button style="margin-top: 30px;" type="submit" name="submit" class="btn btn-default pull-right">Save</button>
@@ -27,6 +27,7 @@
         lineWrapping: true,
         autofocus: true
       });
+      cmEditor.setValue(results[0].text);
     </script>
   </body>
 </html>

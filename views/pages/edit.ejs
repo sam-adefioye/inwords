@@ -1,36 +1,33 @@
 <html>
   <head>
     <% include ../partials/header.ejs %>
-
-    <script src="codemirror-5.32.0/lib/codemirror.js"></script>
-    <link rel="stylesheet" href="codemirror-5.32.0/lib/codemirror.css">
-    <script src="mode/javascript/javascript.js"></script>
   </head>
 
   <body>
-    <div class="container-fluid text-center">
+    <div class="container-fluid">
       <div class="row">
-        <div class="col-xs-2"></div>
-        <div class="col-xs-8">
-          <form method="post" action="/new" class="inline-block">
+        <div class="col-sm-1 col-xs-0"></div>
+        <div class="col-sm-10 col-xs-12">
+          <form name="editor" style="margin: 50px;" method="put" action="/notes/<%= id %>/edit" class="inline-block">
             <div class="form-group">
               <input class="form-control" type="text" name="title" value="<%= results[0].title %>" maxlength="100">
             </div>
-            <textarea name="notes"><%= results[0].text %></textarea>
-            <button type="submit" name="submit" value="Save" class="btn btn-default pull-right"></button>
+            <textarea name="notes"></textarea>
+            <button style="margin-top: 30px;" type="submit" name="submit" class="btn btn-default pull-right">Save</button>
           </form>
         </div>
-        <div class="col-xs-2"></div>
+        <div class="col-sm-1 col-xs-0"></div>
       </div>
     </div>
 
     <script>
-      var editor = document.getElementsByTagName('FORM')[0].getElementsByTagName('TEXTAREA')[0];
+      var editor = document.editor.notes;
       var cmEditor = CodeMirror.fromTextArea(editor, {
         mode: "markdown",
         lineWrapping: true,
         autofocus: true
       });
+      // cmEditor.setValue(results[0].text);
     </script>
   </body>
 </html>

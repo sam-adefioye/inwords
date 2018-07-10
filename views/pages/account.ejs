@@ -10,16 +10,17 @@
 
     <div class="container-fluid text-center">
       <div class="row">
-        <div class="col-xs-2"></div>
-        <div class="col-xs-8">
-          <a class="btn btn-lg btn-danger inline-block" type="button" href="/delete">DELETE MY ACCOUNT</a>
+        <div class="col-sm-2 col-xs-0"></div>
+        <div class="col-sm-8 col-xs-12">
+          <a style="margin: 50px;" class="btn btn-lg btn-danger inline-block" type="button" href="/account/delete">DELETE MY ACCOUNT</a>
+          <p>All notes will be deleted!</p>
         </div>
-        <div class="col-xs-2"></div>
+        <div class="col-sm-2 col-xs-0"></div>
       </div>
     </div>
 
     <footer style="text-align: center; padding: 10px;">
-      <p>Signed in as <%= name %></p><br/>
+      <p>Signed in as <%= name %></p>
       <% include ../partials/footer2.ejs %>
     </footer>
   </body>

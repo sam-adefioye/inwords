@@ -12,17 +12,76 @@
       <div class="row">
         <div class="col-xs-2"></div>
         <div class="col-xs-8">
-          <p class="inline-block">
-            <%= results[0].n_content %>
+          <p style="margin: 50px;" class="inline-block lead">
+            <%= results[0].text %>
           </p>
+
+          <div style="margin-bottom: 30px;">
+            <!-- <a class="" title="Edit note" href="#" data-toggle="model" data-target="#modalRegister"><i class="fas fa-edit fa-2x"></i></a> -->
+
+            <button style="color: #377bb5;" type="button" class="btn btn-md" data-toggle="modal" data-target="#myModal"><i class="fas fa-edit fa-2x"></i></button>
+
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit note</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">X</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form method="post" action="/notes/<%= id %>" id="editform">
+                      <div class="form-group">
+                        <label for="recipient-name" class="form-control-label">Title:</label>
+                        <input type="text" name="title" class="form-control" value="<%= results[0].title %>" id="titleName">
+                      </div>
+                      <div class="form-group">
+                        <label for="message-text" class="form-control-label">Note:</label>
+                        <textarea class="form-control" name="notes" id="noteText"><%= results[0].text %></textarea>
+                      </div>
+                      <button id="form_button" type="submit" class="btn btn-primary pull-right">Save changes</button>
+                    </form>
+                  </div>
+                  <div class="modal-footer" style="margin-top: 25px;">
+                    <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <a class="hidden-lg hidden-sm hidden-md" title="Edit note" href="/notes/<%= results[0].n_id %>/edit" style="margin: 15px;"><i class="fas fa-edit"></i></a> -->
+          </div>
         </div>
         <div class="col-xs-2"></div>
       </div>
     </div>
 
     <footer style="text-align: center;">
-      <p>Signed in as <%= name %></p><br/>
+      <p>Signed in as <%= name %></p>
       <% include ../partials/footer2.ejs %>
     </footer>
+
+    <script>
+    $(function(){
+      var cmEditor = CodeMirror.fromTextArea(document.getElementById("noteText"));
+      // cmEditor.setValue("Hello World");
+                $('#form_button').click(function(e){
+                    e.preventDefault();
+                    console.log('form_button clicked');
+
+
+					$.ajax({
+						type: 'POST',
+						data: {title: document.getElementById("titleName").value, notes: document.getElementById("noteText").value},
+				        // contentType: 'application/json',
+                        url: 'http://localhost:5000/notes/' + <%id%>,
+                        success: function(data) {
+                            console.log('success');
+                            console.log(JSON.stringify(data));
+                        }
+                    });
+                });
+            });
+    </script>
   </body>
 </html>
