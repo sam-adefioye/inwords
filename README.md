@@ -1,4 +1,4 @@
-# inwords
+# inWords
 
 A simple web application for taking notes and saving them.<br/>
 Authentication (OAuth2) via Google Plus API.
