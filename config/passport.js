@@ -28,6 +28,7 @@ module.exports = function(passport, pg) {
             pg.connect(process.env.DATABASE_URL, function(err, client, done) {
               client.query(checkUser, [profile.id], function(err, result) {
                 if(err)
+                  console.log("Err1");
                   cb(err);
 
                 if(result != null && result.rows[0].exists == 't') {
@@ -35,6 +36,7 @@ module.exports = function(passport, pg) {
                 } else {
                   client.query(inputUser, [profile.id, profile.displayName, profile.emails[0].value], function(err, result) {
                     if(err)
+                      console.log("Err1");
                       cb(err);
 
                     cb(null, extractProfile(profile));
