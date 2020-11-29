@@ -20,7 +20,7 @@ module.exports = {
     'googleAuth' : {
         'clientID'      : '1054044114460-obrceqq8b5pjo6knd3ocqs9vg3rl6ral.apps.googleusercontent.com',
         'clientSecret'  : 'w0uYBWEIU8U_E6IGCooH3wJX',
-        'callbackURL'   : 'http://inwords.co/auth/google/callback'
+        'callbackURL'   : 'https://in-words.herokuapp.com/auth/google/callback'
     }
 
 };
