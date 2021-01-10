@@ -11,7 +11,7 @@ function extractProfile (profile) {
   };
 }
 
-module.exports = function(passport, pg) {
+module.exports = function(passport, pool) {
   const checkUser = 'SELECT EXISTS (SELECT * FROM users WHERE user_id = $1);'
   const inputUser = 'INSERT INTO users VALUES ($1, $2, $3);'
     // =========================================================================
@@ -25,25 +25,26 @@ module.exports = function(passport, pg) {
 
     }, function(token, refreshToken, profile, cb) {
           process.nextTick(function() {
-            pg.connect(process.env.DATABASE_URL, function(err, client, done) {
-              client.query(checkUser, [profile.id], function(err, result) {
-                if(err)
-                  console.log("Err1");
-                  cb(err);
+            if (!pool.ended) {
+              pool.connect();
+            }
+            pool.query(checkUser, [profile.id], function(err, result) {
+                if(err) {
+                  return cb(err);
+                }
 
-                if(result != null && result.rows[0].exists == 't') {
+                if(result && result.rows.length && result.rows[0].exists) {
                   cb(null, extractProfile(profile));
                 } else {
-                  client.query(inputUser, [profile.id, profile.displayName, profile.emails[0].value], function(err, result) {
-                    if(err)
-                      console.log("Err1");
-                      cb(err);
+                  pool.query(inputUser, [profile.id, profile.displayName, profile.emails[0].value], function(err, result) {
+                    if(err) {
+                      return cb(err);
+                    }
 
                     cb(null, extractProfile(profile));
                   })
                 }
               })
-            })
           })
           cb(null, extractProfile(profile));
     }));

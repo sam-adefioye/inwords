@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <% include ../partials/header.ejs %>
+    <%- include('../partials/header'); %>
   </head>
 
   <body>
 
     <% if(loggedIn) { %>
-        <% include ../partials/nav2.ejs %>
+        <%- include('../partials/nav2'); %>
     <% } else { %>
-      <% include ../partials/nav.ejs %>
+      <%- include('../partials/nav'); %>
     <% } %>
 
     <div class="container-fluid text-center">
@@ -18,7 +18,7 @@
         <div class="col-xs-8">
           <h1 style="margin: 50px;">Help</h1>
           <p style="margin-bottom: 40px;">
-            Any issues? Contact me via <a href="mailto:sam.adefioye@gmail.com">email</a> or <a href="http://twitter.com/samadfye">Twitter</a>.
+            Any issues? Contact me via <a href="mailto:sam.adefioye@gmail.com">email</a> or <a href="http://twitter.com/sxmwell_">Twitter</a>.
           </p>
           <p>
             inWords uses <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown</a> syntax.
@@ -29,12 +29,7 @@
     </div>
 
     <footer style="text-align: center; padding: 10px;">
-      <% if(loggedIn) { %>
-        <p>Signed in as <%= name %></p>
-      <% include ../partials/footer2.ejs %>
-      <% } else { %>
-          <% include ../partials/footer.ejs %>
-      <% } %>
+      <%- include('../partials/footer', {loggedIn: loggedIn}); %>
     </footer>
   </body>
 </html>

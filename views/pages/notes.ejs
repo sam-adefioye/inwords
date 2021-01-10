@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <% include ../partials/header.ejs %>
+    <%- include('../partials/header'); %>
     <link rel="stylesheet" href="/stylesheets/notes_list.css"/>
   </head>
 
   <body>
 
-    <% include ../partials/nav2.ejs %>
+    <%- include('../partials/nav2'); %>
 
     <div class="container-fluid">
       <div class="row wrap hidden-xs">
@@ -23,9 +23,9 @@
           <ul class="inline-block" style="margin-bottom: 30px;">
             <% results.forEach(function(r) { %>
                 <li style="list-style-type: none; padding: 15px 0px;">
-                  <a href="/notes/<%= r.n_id %>" style="text-decoration: none;" class="lead"><span><%= r.n_title %></span></a>
+                  <a href="/notes/<%= r.id %>" style="text-decoration: none;" class="lead"><span><%= r.n_title %></span></a>
                   <div class="pull-right">
-                    <a class="hidden-xs" title="Delete note" href="/notes/<%= r.n_id %>/delete"><i class="fas fa-trash-alt fa-2x"></i></a>
+                    <a class="hidden-xs" title="Delete note"><i class="fas fa-trash-alt fa-2x delete-note" id="<%= r.id %>"></i></a>
                   </div>
                 </li>
             <% }); %>
@@ -45,9 +45,9 @@
           <ul class="inline-block" style="margin-bottom: 30px; width: 90%;">
             <% results.forEach(function(r) { %>
                 <li style="list-style-type: none; padding: 15px 0px;">
-                  <a href="notes/<%= r.n_id %>" style="text-decoration: none;" class="lead"><span><%= r.n_title %></span></a>
+                  <a href="notes/<%= r.id %>" style="text-decoration: none;" class="lead"><span><%= r.n_title %></span></a>
                   <div class="pull-right">
-                    <a title="Delete note" href="notes/<%= r.n_id %>/delete"><i class="fas fa-trash-alt"></i></a>
+                    <a title="Delete note"><i class="fas fa-trash-alt delete-note" id="<%= r.id %>"></i></a>
                   </div>
                 </li>
             <% }); %>
@@ -57,7 +57,22 @@
 
     <footer style="text-align: center;">
       <p>Signed in as <%= name %></p>
-      <% include ../partials/footer2.ejs %>
+      <%- include('../partials/footer', {loggedIn: true}); %>
     </footer>
+
+    <script>
+      $(document).ready(() => {
+        $('.delete-note').on('click', (e) => {
+          console.log(e.target);
+          $.ajax({
+            type: 'DELETE',
+            url: '/notes/' + e.target.id + '/delete',
+            success: function(data) {
+              window.location = '/notes'
+            }
+          });
+        });
+      });
+    </script>
   </body>
 </html>

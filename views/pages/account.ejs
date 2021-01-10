@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <% include ../partials/header.ejs %>
+    <%- include('../partials/header'); %>
   </head>
 
   <body>
 
-    <% include ../partials/nav2.ejs %>
+    <%- include('../partials/nav2'); %>
 
     <div class="container-fluid text-center">
       <div class="row">
@@ -21,7 +21,7 @@
 
     <footer style="text-align: center; padding: 10px;">
       <p>Signed in as <%= name %></p>
-      <% include ../partials/footer2.ejs %>
+      <%- include('../partials/footer', {loggedIn: true}); %>
     </footer>
   </body>
 </html>

@@ -7,19 +7,20 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "heroku local web"
   },
   "dependencies": {
-    "pg": "6.x",
-    "ejs": "^2.5.6",
-    "cookie-parser": "~1.4.3",
-    "express": "^4.15.2",
-    "express-session": "~1.15.6",
-    "body-parser": "~1.18.3",
+    "body-parser": "~1.19.0",
+    "cookie-parser": "~1.4.5",
+    "ejs": "^3.1.5",
+    "ejs-lint": "^1.1.0",
+    "express": "^4.17.1",
+    "express-session": "~1.17.1",
     "passport": "~0.4.0",
-    "passport-facebook" : "~2.1.1",
-    "passport-twitter" : "~1.0.4",
-    "passport-google-oauth" : "~1.0.0"
+    "passport-facebook": "~3.0.0",
+    "passport-google-oauth": "^2.0.0",
+    "passport-twitter": "~1.0.4",
+    "pg": "^8.5"
   },
   "devDependencies": {
     "request": "^2.81.0",

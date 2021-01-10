@@ -3,5 +3,10 @@
   <p><a class="secondary blend-link" href="/help">Help</a>
   <span class="sep"> | </span>
   <a class="secondary blend-link" href="/about">About</a>
+  <% if(loggedIn) { %>
+    <span class="sep"> | </span>
+    <a class="secondary blend-link" href="/account">Account</a>
+  <% } %>
   </p>
+  <p>Est. 2017</p>
 </div>

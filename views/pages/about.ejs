@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <% include ../partials/header.ejs %>
+    <%- include('../partials/header'); %>
   </head>
 
   <body>
 
     <% if(loggedIn) { %>
-        <% include ../partials/nav2.ejs %>
+        <%- include('../partials/nav2'); %>
     <% } else { %>
-      <% include ../partials/nav.ejs %>
+      <%- include('../partials/nav'); %>
     <% } %>
 
     <div class="container-fluid text-center">
@@ -28,12 +28,7 @@
     </div>
 
     <footer style="text-align: center; padding: 10px;">
-      <% if(loggedIn) { %>
-        <p>Signed in as <%= name %></p>
-      <% include ../partials/footer2.ejs %>
-      <% } else { %>
-          <% include ../partials/footer.ejs %>
-      <% } %>
+      <%- include('../partials/footer', {loggedIn: loggedIn}); %>
     </footer>
   </body>
 </html>
